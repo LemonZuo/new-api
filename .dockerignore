@@ -1,0 +1,5 @@
+# 移除脚本
+*.sh
+# 移除开发环境的docker-compose
+docker-compose-dev.yml
+web/node_modules

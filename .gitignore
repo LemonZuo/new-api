@@ -6,3 +6,6 @@ upload
 build
 *.db-journal
 logs
+web/dist
+web/node_modules
+.env*
