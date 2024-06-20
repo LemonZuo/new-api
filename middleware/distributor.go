@@ -180,13 +180,15 @@ func SetupContextForSelectedChannel(c *gin.Context, channel *model.Channel, mode
 	c.Set("status_code_mapping", channel.GetStatusCodeMapping())
 	c.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", channel.Key))
 	c.Set("base_url", channel.GetBaseURL())
+	c.Set("headers", channel.Headers)
+	c.Set("proxy", channel.Proxy)
 	// TODO: api_version统一
 	switch channel.Type {
 	case common.ChannelTypeAzure:
 		c.Set("api_version", channel.Other)
 	case common.ChannelTypeXunfei:
 		c.Set("api_version", channel.Other)
-	//case common.ChannelTypeAIProxyLibrary:
+	// case common.ChannelTypeAIProxyLibrary:
 	//	c.Set("library_id", channel.Other)
 	case common.ChannelTypeGemini:
 		c.Set("api_version", channel.Other)

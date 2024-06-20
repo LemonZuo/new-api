@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"one-api/common"
 	"one-api/model"
+	"one-api/relay/channel/openai"
 	"strconv"
 	"strings"
 )
@@ -144,7 +145,7 @@ func SearchChannels(c *gin.Context) {
 	keyword := c.Query("keyword")
 	group := c.Query("group")
 	modelKeyword := c.Query("model")
-	//idSort, _ := strconv.ParseBool(c.Query("id_sort"))
+	// idSort, _ := strconv.ParseBool(c.Query("id_sort"))
 	channels, err := model.SearchChannels(keyword, group, modelKeyword)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -205,6 +206,14 @@ func AddChannel(c *gin.Context) {
 		}
 		localChannel := channel
 		localChannel.Key = key
+		localChannel, err = handleOpenAIChannelRefreshToken(localChannel)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": err.Error(),
+			})
+			return
+		}
 		channels = append(channels, localChannel)
 	}
 	err = model.BatchInsertChannels(channels)
@@ -297,6 +306,14 @@ func UpdateChannel(c *gin.Context) {
 		})
 		return
 	}
+	channel, err = handleOpenAIChannelRefreshToken(channel)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
 	err = channel.Update()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -311,4 +328,29 @@ func UpdateChannel(c *gin.Context) {
 		"data":    channel,
 	})
 	return
+}
+
+func handleOpenAIChannelRefreshToken(channel model.Channel) (model.Channel, error) {
+	// 是openAI且传递的是RT
+	if channel.Type == 1 && strings.HasPrefix(channel.Key, "rt-") {
+		// 截取到RT
+		channel.OpenAIRefreshToken = strings.Replace(channel.Key, "rt-", "", 1)
+		accessToken, err := openai.RefreshAccessToken(channel.OpenAIRefreshToken)
+		// 提取失败
+		if err != nil {
+			return channel, err
+		}
+		// 处理成功
+		channel.Key = accessToken.AccessToken
+		channel.OpenAIAccessTokenExpiresTime = common.GetTimestamp() + accessToken.ExpiresIn
+		// 未传递端点地址
+		if len(channel.GetBaseURL()) == 0 {
+			// 未填写端点地址，默认为始皇的oaifree
+			baseUrl := "https://api.oaifree.com"
+			channel.BaseURL = &baseUrl
+		}
+		return channel, nil
+	} else {
+		return channel, nil
+	}
 }

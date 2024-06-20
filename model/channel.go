@@ -3,32 +3,37 @@ package model
 import (
 	"gorm.io/gorm"
 	"one-api/common"
+	"time"
 )
 
 type Channel struct {
-	Id                 int     `json:"id"`
-	Type               int     `json:"type" gorm:"default:0"`
-	Key                string  `json:"key" gorm:"not null"`
-	OpenAIOrganization *string `json:"openai_organization"`
-	TestModel          *string `json:"test_model"`
-	Status             int     `json:"status" gorm:"default:1"`
-	Name               string  `json:"name" gorm:"index"`
-	Weight             *uint   `json:"weight" gorm:"default:0"`
-	CreatedTime        int64   `json:"created_time" gorm:"bigint"`
-	TestTime           int64   `json:"test_time" gorm:"bigint"`
-	ResponseTime       int     `json:"response_time"` // in milliseconds
-	BaseURL            *string `json:"base_url" gorm:"column:base_url;default:''"`
-	Other              string  `json:"other"`
-	Balance            float64 `json:"balance"` // in USD
-	BalanceUpdatedTime int64   `json:"balance_updated_time" gorm:"bigint"`
-	Models             string  `json:"models"`
-	Group              string  `json:"group" gorm:"type:varchar(64);default:'default'"`
-	UsedQuota          int64   `json:"used_quota" gorm:"bigint;default:0"`
-	ModelMapping       *string `json:"model_mapping" gorm:"type:varchar(1024);default:''"`
-	//MaxInputTokens     *int    `json:"max_input_tokens" gorm:"default:0"`
+	Id                           int     `json:"id"`
+	Type                         int     `json:"type" gorm:"default:0"`
+	Key                          string  `json:"key" gorm:"not null"`
+	OpenAIRefreshToken           string  `json:"openai_refresh_token" gorm:"default:''"`
+	OpenAIAccessTokenExpiresTime int64   `json:"openai_access_token_expires_time" gorm:"bigint"`
+	OpenAIOrganization           *string `json:"openai_organization"`
+	TestModel                    *string `json:"test_model"`
+	Status                       int     `json:"status" gorm:"default:1"`
+	Name                         string  `json:"name" gorm:"index"`
+	Weight                       *uint   `json:"weight" gorm:"default:0"`
+	CreatedTime                  int64   `json:"created_time" gorm:"bigint"`
+	TestTime                     int64   `json:"test_time" gorm:"bigint"`
+	ResponseTime                 int     `json:"response_time"` // in milliseconds
+	BaseURL                      *string `json:"base_url" gorm:"column:base_url;default:''"`
+	Other                        string  `json:"other"`
+	Balance                      float64 `json:"balance"` // in USD
+	BalanceUpdatedTime           int64   `json:"balance_updated_time" gorm:"bigint"`
+	Models                       string  `json:"models"`
+	Group                        string  `json:"group" gorm:"type:varchar(64);default:'default'"`
+	UsedQuota                    int64   `json:"used_quota" gorm:"bigint;default:0"`
+	ModelMapping                 *string `json:"model_mapping" gorm:"type:varchar(1024);default:''"`
+	// MaxInputTokens     *int    `json:"max_input_tokens" gorm:"default:0"`
 	StatusCodeMapping *string `json:"status_code_mapping" gorm:"type:varchar(1024);default:''"`
 	Priority          *int64  `json:"priority" gorm:"bigint;default:0"`
 	AutoBan           *int    `json:"auto_ban" gorm:"default:1"`
+	Headers           string  `json:"headers" gorm:"type:varchar(1024);default:''"`
+	Proxy             string  `json:"proxy" gorm:"type:varchar(1024);default:''"`
 }
 
 func GetAllChannels(startIdx int, num int, selectAll bool, idSort bool) ([]*Channel, error) {
@@ -41,7 +46,7 @@ func GetAllChannels(startIdx int, num int, selectAll bool, idSort bool) ([]*Chan
 	if selectAll {
 		err = DB.Order(order).Find(&channels).Error
 	} else {
-		err = DB.Order(order).Limit(num).Offset(startIdx).Omit("key").Find(&channels).Error
+		err = DB.Order(order).Limit(num).Offset(startIdx).Omit("key", "open_ai_refresh_token", "open_ai_access_token_expires_time").Find(&channels).Error
 	}
 	return channels, err
 }
@@ -49,18 +54,22 @@ func GetAllChannels(startIdx int, num int, selectAll bool, idSort bool) ([]*Chan
 func SearchChannels(keyword string, group string, model string) ([]*Channel, error) {
 	var channels []*Channel
 	keyCol := "`key`"
+	openaiRefreshTokenCol := "`open_ai_refresh_token`"
+	openAIAccessTokenExpiresTimeCol := "`open_ai_access_token_expires_time`"
 	groupCol := "`group`"
 	modelsCol := "`models`"
 
 	// 如果是 PostgreSQL，使用双引号
 	if common.UsingPostgreSQL {
 		keyCol = `"key"`
+		openaiRefreshTokenCol = `"open_ai_refresh_token"`
+		openAIAccessTokenExpiresTimeCol = `"open_ai_access_token_expires_time"`
 		groupCol = `"group"`
 		modelsCol = `"models"`
 	}
 
 	// 构造基础查询
-	baseQuery := DB.Model(&Channel{}).Omit(keyCol)
+	baseQuery := DB.Model(&Channel{}).Omit(keyCol, openaiRefreshTokenCol, openAIAccessTokenExpiresTimeCol)
 
 	// 构造WHERE子句
 	var whereClause string
@@ -87,7 +96,7 @@ func GetChannelById(id int, selectAll bool) (*Channel, error) {
 	if selectAll {
 		err = DB.First(&channel, "id = ?", id).Error
 	} else {
-		err = DB.Omit("key").First(&channel, "id = ?", id).Error
+		err = DB.Omit("key", "open_ai_refresh_token", "open_ai_access_token_expires_time").First(&channel, "id = ?", id).Error
 	}
 	return &channel, err
 }
@@ -108,7 +117,7 @@ func BatchInsertChannels(channels []Channel) error {
 }
 
 func BatchDeleteChannels(ids []int) error {
-	//使用事务 删除channel表和channel_ability表
+	// 使用事务 删除channel表和channel_ability表
 	tx := DB.Begin()
 	err := tx.Where("id in (?)", ids).Delete(&Channel{}).Error
 	if err != nil {
@@ -247,4 +256,13 @@ func DeleteChannelByStatus(status int64) (int64, error) {
 func DeleteDisabledChannel() (int64, error) {
 	result := DB.Where("status = ? or status = ?", common.ChannelStatusAutoDisabled, common.ChannelStatusManuallyDisabled).Delete(&Channel{})
 	return result.RowsAffected, result.Error
+}
+
+func GetOpenAIAccessTokenWillExpireChannel() ([]*Channel, error) {
+	var channels []*Channel
+	// 计算24小时后的时间戳
+	expired := time.Now().Add(24 * time.Hour).Unix()
+	// 查询所有在24小时内将会过期,且有的Channel
+	err := DB.Where("type = 1 AND open_ai_refresh_token IS NOT NULL AND open_ai_refresh_token != ''  AND open_ai_access_token_expires_time > 0 AND open_ai_access_token_expires_time <= ?", expired).Find(&channels).Error
+	return channels, err
 }

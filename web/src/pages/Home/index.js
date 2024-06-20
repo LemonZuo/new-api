@@ -84,7 +84,17 @@ const Home = () => {
                       : 'unknown'}
                   </p>
                   <p>
-                    源码：
+                    one-api：
+                    <a
+                      href='https://github.com/songquanpeng/one-api'
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      https://github.com/songquanpeng/one-api
+                    </a>
+                  </p>
+                  <p>
+                    new-api：
                     <a
                       href='https://github.com/Calcium-Ion/new-api'
                       target='_blank'

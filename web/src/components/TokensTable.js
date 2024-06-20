@@ -194,64 +194,64 @@ const TokensTable = () => {
             style={{ marginRight: 1 }}
             aria-label='项目操作按钮组'
           >
-            <Button
-              theme='light'
-              style={{ color: 'rgba(var(--semi-teal-7), 1)' }}
-              onClick={() => {
-                onOpenLink('next', record.key);
-              }}
-            >
-              聊天
-            </Button>
-            <Dropdown
-              trigger='click'
-              position='bottomRight'
-              menu={[
-                {
-                  node: 'item',
-                  key: 'next',
-                  disabled: !localStorage.getItem('chat_link'),
-                  name: 'ChatGPT Next Web',
-                  onClick: () => {
-                    onOpenLink('next', record.key);
-                  },
-                },
-                {
-                  node: 'item',
-                  key: 'next-mj',
-                  disabled: !localStorage.getItem('chat_link2'),
-                  name: 'ChatGPT Web & Midjourney',
-                  onClick: () => {
-                    onOpenLink('next-mj', record.key);
-                  },
-                },
-                {
-                  node: 'item',
-                  key: 'ama',
-                  name: 'AMA 问天（BotGem）',
-                  onClick: () => {
-                    onOpenLink('ama', record.key);
-                  },
-                },
-                {
-                  node: 'item',
-                  key: 'opencat',
-                  name: 'OpenCat',
-                  onClick: () => {
-                    onOpenLink('opencat', record.key);
-                  },
-                },
-              ]}
-            >
-              <Button
-                style={{
-                  padding: '8px 4px',
-                  color: 'rgba(var(--semi-teal-7), 1)',
-                }}
-                type='primary'
-                icon={<IconTreeTriangleDown />}
-              ></Button>
-            </Dropdown>
+            {/*<Button*/}
+            {/*  theme='light'*/}
+            {/*  style={{ color: 'rgba(var(--semi-teal-7), 1)' }}*/}
+            {/*  onClick={() => {*/}
+            {/*    onOpenLink('next', record.key);*/}
+            {/*  }}*/}
+            {/*>*/}
+            {/*  聊天*/}
+            {/*</Button>*/}
+            {/*<Dropdown*/}
+            {/*  trigger='click'*/}
+            {/*  position='bottomRight'*/}
+            {/*  menu={[*/}
+            {/*    {*/}
+            {/*      node: 'item',*/}
+            {/*      key: 'next',*/}
+            {/*      disabled: !localStorage.getItem('chat_link'),*/}
+            {/*      name: 'ChatGPT Next Web',*/}
+            {/*      onClick: () => {*/}
+            {/*        onOpenLink('next', record.key);*/}
+            {/*      },*/}
+            {/*    },*/}
+            {/*    {*/}
+            {/*      node: 'item',*/}
+            {/*      key: 'next-mj',*/}
+            {/*      disabled: !localStorage.getItem('chat_link2'),*/}
+            {/*      name: 'ChatGPT Web & Midjourney',*/}
+            {/*      onClick: () => {*/}
+            {/*        onOpenLink('next-mj', record.key);*/}
+            {/*      },*/}
+            {/*    },*/}
+            {/*    {*/}
+            {/*      node: 'item',*/}
+            {/*      key: 'ama',*/}
+            {/*      name: 'AMA 问天（BotGem）',*/}
+            {/*      onClick: () => {*/}
+            {/*        onOpenLink('ama', record.key);*/}
+            {/*      },*/}
+            {/*    },*/}
+            {/*    {*/}
+            {/*      node: 'item',*/}
+            {/*      key: 'opencat',*/}
+            {/*      name: 'OpenCat',*/}
+            {/*      onClick: () => {*/}
+            {/*        onOpenLink('opencat', record.key);*/}
+            {/*      },*/}
+            {/*    },*/}
+            {/*  ]}*/}
+            {/*>*/}
+            {/*  <Button*/}
+            {/*    style={{*/}
+            {/*      padding: '8px 4px',*/}
+            {/*      color: 'rgba(var(--semi-teal-7), 1)',*/}
+            {/*    }}*/}
+            {/*    type='primary'*/}
+            {/*    icon={<IconTreeTriangleDown />}*/}
+            {/*  ></Button>*/}
+            {/*</Dropdown>*/}
           </SplitButtonGroup>
           <Popconfirm
             title='确定是否要删除此令牌？'

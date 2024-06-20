@@ -1,5 +1,15 @@
-# 移除脚本
-*.sh
-# 移除开发环境的docker-compose
-docker-compose-dev.yml
+.idea
+.github
+logs
 web/node_modules
+.env
+build.sh
+docker-compose.yml
+Dockerfile
+LICENSE
+Makefile
+Midjourney.md
+*.db
+one-api.service
+README.md
+update.sh

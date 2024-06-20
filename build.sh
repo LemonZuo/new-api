@@ -36,9 +36,12 @@ docker buildx inspect --bootstrap
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   --build-arg NPM_CONFIG_REGISTRY=https://registry.npmmirror.com \
-  -t ${HUB_USER}/${HUB_REPO}:magic_change . \
+  -t ${HUB_USER}/${HUB_REPO}:${VERSION} \
+  -t ${HUB_USER}/${HUB_REPO} . \
   --push \
   --progress=plain
 
 # 登出 Docker Hub
 docker logout
+# 恢复 VERSION 文件
+git restore VERSION

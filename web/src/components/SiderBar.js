@@ -75,15 +75,15 @@ const SiderBar = () => {
         icon: <IconLayers />,
         className: isAdmin() ? 'semi-navigation-item-normal' : 'tableHiddle',
       },
-      {
-        text: '聊天',
-        itemKey: 'chat',
-        to: '/chat',
-        icon: <IconComment />,
-        className: localStorage.getItem('chat_link')
-          ? 'semi-navigation-item-normal'
-          : 'tableHiddle',
-      },
+      // {
+      //   text: '聊天',
+      //   itemKey: 'chat',
+      //   to: '/chat',
+      //   icon: <IconComment />,
+      //   className: localStorage.getItem('chat_link')
+      //     ? 'semi-navigation-item-normal'
+      //     : 'tableHiddle',
+      // },
       {
         text: '令牌',
         itemKey: 'token',

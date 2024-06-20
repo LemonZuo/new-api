@@ -14,6 +14,7 @@ import (
 	"one-api/model"
 	"one-api/router"
 	"one-api/service"
+	"one-api/task"
 	"os"
 	"strconv"
 
@@ -106,6 +107,9 @@ func main() {
 		common.SysLog("pprof enabled")
 	}
 
+	// 初始化定时任务
+	task.InitCron()
+
 	service.InitTokenEncoders()
 
 	// Initialize HTTP server
@@ -120,7 +124,7 @@ func main() {
 		})
 	}))
 	// This will cause SSE not to work!!!
-	//server.Use(gzip.Gzip(gzip.DefaultCompression))
+	// server.Use(gzip.Gzip(gzip.DefaultCompression))
 	server.Use(middleware.RequestId())
 	middleware.SetUpLogger(server)
 	// Initialize session store

@@ -107,7 +107,7 @@ const ChannelsTable = () => {
       },
     },
     {
-      title: '已用/剩余',
+      title: '已用',
       dataIndex: 'expired_time',
       render: (text, record, index) => {
         return (
@@ -118,18 +118,18 @@ const ChannelsTable = () => {
                   {renderQuota(record.used_quota)}
                 </Tag>
               </Tooltip>
-              <Tooltip content={'剩余额度' + record.balance + '，点击更新'}>
-                <Tag
-                  color='white'
-                  type='ghost'
-                  size='large'
-                  onClick={() => {
-                    updateChannelBalance(record);
-                  }}
-                >
-                  ${renderNumberWithPoint(record.balance)}
-                </Tag>
-              </Tooltip>
+              {/*<Tooltip content={'剩余额度' + record.balance}>*/}
+              {/*  <Tag*/}
+              {/*    color='white'*/}
+              {/*    type='ghost'*/}
+              {/*    size='large'*/}
+              {/*    onClick={() => {*/}
+              {/*      updateChannelBalance(record);*/}
+              {/*    }}*/}
+              {/*  >*/}
+              {/*    ${renderNumberWithPoint(record.balance)}*/}
+              {/*  </Tag>*/}
+              {/*</Tooltip>*/}
             </Space>
           </div>
         );
@@ -365,11 +365,12 @@ const ChannelsTable = () => {
     const channelToCopy = channels.find(
       (channel) => String(channel.id) === String(id),
     );
-    console.log(channelToCopy);
+    // console.log(channelToCopy);
     channelToCopy.name += '_复制';
     channelToCopy.created_time = null;
     channelToCopy.balance = 0;
     channelToCopy.used_quota = 0;
+    channelToCopy.key = String(channelToCopy.key)
     if (!channelToCopy) {
       showError('渠道未找到，请刷新页面后重试。');
       return;
@@ -835,15 +836,15 @@ const ChannelsTable = () => {
               测试所有通道
             </Button>
           </Popconfirm>
-          <Popconfirm
-            title='确定？'
-            okType={'secondary'}
-            onConfirm={updateAllChannelsBalance}
-          >
-            <Button theme='light' type='secondary' style={{ marginRight: 8 }}>
-              更新所有已启用通道余额
-            </Button>
-          </Popconfirm>
+          {/*<Popconfirm*/}
+          {/*  title='确定？'*/}
+          {/*  okType={'secondary'}*/}
+          {/*  onConfirm={updateAllChannelsBalance}*/}
+          {/*>*/}
+          {/*  <Button theme='light' type='secondary' style={{ marginRight: 8 }}>*/}
+          {/*    更新所有已启用通道余额*/}
+          {/*  </Button>*/}
+          {/*</Popconfirm>*/}
           <Popconfirm
             title='确定是否要删除禁用通道？'
             content='此修改将不可逆'

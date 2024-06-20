@@ -26,6 +26,8 @@ type RelayInfo struct {
 	ApiKey            string
 	Organization      string
 	BaseUrl           string
+	Headers           string
+	Proxy             string
 }
 
 func GenRelayInfo(c *gin.Context) *RelayInfo {
@@ -55,6 +57,8 @@ func GenRelayInfo(c *gin.Context) *RelayInfo {
 		ApiVersion:     c.GetString("api_version"),
 		ApiKey:         strings.TrimPrefix(c.Request.Header.Get("Authorization"), "Bearer "),
 		Organization:   c.GetString("channel_organization"),
+		Headers:        c.GetString("headers"),
+		Proxy:          c.GetString("proxy"),
 	}
 	if info.BaseUrl == "" {
 		info.BaseUrl = common.ChannelBaseURLs[channelType]
