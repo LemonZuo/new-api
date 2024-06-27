@@ -15,6 +15,7 @@ import '../index.css';
 
 import {
   IconCalendarClock,
+  IconChecklistStroked,
   IconComment,
   IconCreditCard,
   IconGift,
@@ -58,6 +59,7 @@ const SiderBar = () => {
     chat: '/chat',
     detail: '/detail',
     pricing: '/pricing',
+    task: '/task',
   };
 
   const headerButtons = useMemo(
@@ -143,6 +145,16 @@ const SiderBar = () => {
             : 'tableHiddle',
       },
       {
+        text: '异步任务',
+        itemKey: 'task',
+        to: '/task',
+        icon: <IconChecklistStroked />,
+        className:
+          localStorage.getItem('enable_task') === 'true'
+            ? 'semi-navigation-item-normal'
+            : 'tableHiddle',
+      },
+      {
         text: '设置',
         itemKey: 'setting',
         to: '/setting',
@@ -158,6 +170,7 @@ const SiderBar = () => {
     [
       localStorage.getItem('enable_data_export'),
       localStorage.getItem('enable_drawing'),
+      localStorage.getItem('enable_task'),
       localStorage.getItem('chat_link'),
       isAdmin(),
     ],

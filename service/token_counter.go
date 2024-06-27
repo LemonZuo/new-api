@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/linux-do/tiktoken-go"
+	"github.com/pkoukk/tiktoken-go"
 	"image"
 	"log"
 	"math"
@@ -53,6 +53,7 @@ func getTokenEncoder(model string) *tiktoken.Tiktoken {
 	if ok && tokenEncoder != nil {
 		return tokenEncoder
 	}
+	// 如果ok（即model在tokenEncoderMap中），但是tokenEncoder为nil，说明可能是自定义模型
 	if ok {
 		tokenEncoder, err := tiktoken.EncodingForModel(model)
 		if err != nil {
@@ -77,6 +78,10 @@ func getImageToken(imageUrl *dto.MessageImageUrl, model string, stream bool) (in
 	if imageUrl.Detail == "low" {
 		return 85, nil
 	}
+	// 同步One API的图片计费逻辑
+	if imageUrl.Detail == "auto" || imageUrl.Detail == "" {
+		imageUrl.Detail = "high"
+	}
 	var config image.Config
 	var err error
 	var format string
@@ -94,14 +99,14 @@ func getImageToken(imageUrl *dto.MessageImageUrl, model string, stream bool) (in
 	if config.Width == 0 || config.Height == 0 {
 		return 0, errors.New(fmt.Sprintf("fail to decode image config: %s", imageUrl.Url))
 	}
-	// TODO: 适配官方auto计费
-	if config.Width < 512 && config.Height < 512 {
-		if imageUrl.Detail == "auto" || imageUrl.Detail == "" {
-			// 如果图片尺寸小于512，强制使用low
-			imageUrl.Detail = "low"
-			return 85, nil
-		}
-	}
+	//// TODO: 适配官方auto计费
+	//if config.Width < 512 && config.Height < 512 {
+	//	if imageUrl.Detail == "auto" || imageUrl.Detail == "" {
+	//		// 如果图片尺寸小于512，强制使用low
+	//		imageUrl.Detail = "low"
+	//		return 85, nil
+	//	}
+	//}
 
 	shortSide := config.Width
 	otherSide := config.Height
