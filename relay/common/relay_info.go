@@ -16,6 +16,7 @@ type RelayInfo struct {
 	Group             string
 	TokenUnlimited    bool
 	StartTime         time.Time
+	FirstResponseTime time.Time
 	ApiType           int
 	IsStream          bool
 	RelayMode         int
@@ -39,6 +40,7 @@ func GenRelayInfo(c *gin.Context) *RelayInfo {
 	group := c.GetString("group")
 	tokenUnlimited := c.GetBool("token_unlimited_quota")
 	startTime := time.Now()
+	// firstResponseTime = time.Now() - 1 second
 
 	apiType, _ := constant.ChannelType2APIType(channelType)
 
@@ -53,6 +55,7 @@ func GenRelayInfo(c *gin.Context) *RelayInfo {
 		Group:          group,
 		TokenUnlimited: tokenUnlimited,
 		StartTime:      startTime,
+		FirstResponseTime: startTime.Add(-time.Second),
 		ApiType:        apiType,
 		ApiVersion:     c.GetString("api_version"),
 		ApiKey:         strings.TrimPrefix(c.Request.Header.Get("Authorization"), "Bearer "),
