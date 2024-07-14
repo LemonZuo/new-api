@@ -555,7 +555,7 @@ const ChannelsTable = () => {
     );
     const { success, message, data } = res.data;
     if (success) {
-      setChannels(data);
+      setChannelFormat(data);
       setActivePage(1);
     } else {
       showError(message);

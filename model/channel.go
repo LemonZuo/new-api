@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"one-api/common"
 	"time"
+	"strings"
 )
 
 type Channel struct {
@@ -36,6 +37,13 @@ type Channel struct {
 	OtherInfo         string  `json:"other_info"`
 	Headers           string  `json:"headers" gorm:"type:varchar(1024);default:''"`
 	Proxy             string  `json:"proxy" gorm:"type:varchar(1024);default:''"`
+}
+
+func (channel *Channel) GetModels() []string {
+	if channel.Models == "" {
+		return []string{}
+	}
+	return strings.Split(strings.Trim(channel.Models, ","), ",")
 }
 
 func (channel *Channel) GetOtherInfo() map[string]interface{} {
