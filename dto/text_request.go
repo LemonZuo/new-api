@@ -29,12 +29,13 @@ type GeneralOpenAIRequest struct {
 	PresencePenalty  float64         `json:"presence_penalty,omitempty"`
 	ResponseFormat   *ResponseFormat `json:"response_format,omitempty"`
 	Seed             float64         `json:"seed,omitempty"`
-	Tools            any             `json:"tools,omitempty"`
+	Tools            []ToolCall      `json:"tools,omitempty"`
 	ToolChoice       any             `json:"tool_choice,omitempty"`
 	User             string          `json:"user,omitempty"`
 	LogitBias        any             `json:"logit_bias,omitempty"`
 	LogProbs         any             `json:"logprobs,omitempty"`
 	TopLogProbs      int             `json:"top_logprobs,omitempty"`
+	Dimensions       int             `json:"dimensions,omitempty"`
 }
 
 type OpenAITools struct {
@@ -52,8 +53,8 @@ type StreamOptions struct {
 	IncludeUsage bool `json:"include_usage,omitempty"`
 }
 
-func (r GeneralOpenAIRequest) GetMaxTokens() int64 {
-	return int64(r.MaxTokens)
+func (r GeneralOpenAIRequest) GetMaxTokens() int {
+	return int(r.MaxTokens)
 }
 
 func (r GeneralOpenAIRequest) ParseInput() []string {
@@ -107,6 +108,11 @@ func (m Message) StringContent() string {
 	return string(m.Content)
 }
 
+func (m *Message) SetStringContent(content string) {
+	jsonContent, _ := json.Marshal(content)
+	m.Content = jsonContent
+}
+
 func (m Message) IsStringContent() bool {
 	var stringContent string
 	if err := json.Unmarshal(m.Content, &stringContent); err == nil {
@@ -146,7 +152,7 @@ func (m Message) ParseContent() []MediaMessage {
 					if ok {
 						subObj["detail"] = detail.(string)
 					} else {
-						subObj["detail"] = "auto"
+						subObj["detail"] = "high"
 					}
 					contentList = append(contentList, MediaMessage{
 						Type: ContentTypeImageURL,
@@ -155,7 +161,16 @@ func (m Message) ParseContent() []MediaMessage {
 							Detail: subObj["detail"].(string),
 						},
 					})
+				} else if url, ok := contentMap["image_url"].(string); ok {
+					contentList = append(contentList, MediaMessage{
+						Type: ContentTypeImageURL,
+						ImageUrl: MessageImageUrl{
+							Url:    url,
+							Detail: "high",
+						},
+					})
 				}
+
 			}
 		}
 		return contentList
