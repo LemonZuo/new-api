@@ -83,13 +83,28 @@ func CovertGemini2OpenAI(textRequest dto.GeneralOpenAIRequest) *GeminiChatReques
 				if imageNum > GeminiVisionMaxImageNum {
 					continue
 				}
-				mimeType, data, _ := common.GetImageFromUrl(part.ImageUrl.(dto.MessageImageUrl).Url)
-				parts = append(parts, GeminiPart{
-					InlineData: &GeminiInlineData{
-						MimeType: mimeType,
-						Data:     data,
-					},
-				})
+				// 判断是否是url
+				if strings.HasPrefix(part.ImageUrl.(dto.MessageImageUrl).Url, "http") {
+					// 是url，获取图片的类型和base64编码的数据
+					mimeType, data, _ := common.GetImageFromUrl(part.ImageUrl.(dto.MessageImageUrl).Url)
+					parts = append(parts, GeminiPart{
+						InlineData: &GeminiInlineData{
+							MimeType: mimeType,
+							Data:     data,
+						},
+					})
+				} else {
+					_, format, base64String, err := common.DecodeBase64ImageData(part.ImageUrl.(dto.MessageImageUrl).Url)
+					if err != nil {
+						continue
+					}
+					parts = append(parts, GeminiPart{
+						InlineData: &GeminiInlineData{
+							MimeType: "image/" + format,
+							Data:     base64String,
+						},
+					})
+				}
 			}
 		}
 		content.Parts = parts
