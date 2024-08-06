@@ -90,6 +90,12 @@ function renderType(type) {
           图混合
         </Tag>
       );
+    case 'UPLOAD':
+      return (
+        <Tag color='blue' size='large'>
+          上传文件
+        </Tag>
+      );
     case 'SHORTEN':
       return (
         <Tag color='pink' size='large'>
