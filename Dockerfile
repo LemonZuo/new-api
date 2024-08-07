@@ -1,4 +1,4 @@
-FROM node:16 as web_builder
+FROM node:16 AS web_builder
 
 WORKDIR /build
 COPY web/package.json .
