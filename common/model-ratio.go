@@ -31,10 +31,11 @@ var defaultModelRatio = map[string]float64{
 	"gpt-4-32k":                      30,
 	"gpt-4-32k-0314":                 30,
 	"gpt-4-32k-0613":                 30,
-	"gpt-4o-mini":               0.075,		// $0.00015 / 1K tokens
-	"gpt-4o-mini-2024-07-18":    0.075,
+	"gpt-4o-mini":                    0.075, // $0.00015 / 1K tokens
+	"gpt-4o-mini-2024-07-18":         0.075,
 	"gpt-4o":                         2.5,  // $0.005 / 1K tokens
 	"gpt-4o-2024-05-13":              2.5,  // $0.005 / 1K tokens
+	"gpt-4o-2024-08-06":              1.25, // $0.01 / 1K tokens
 	"gpt-4-turbo":                    5,    // $0.01 / 1K tokens
 	"gpt-4-turbo-2024-04-09":         5,    // $0.01 / 1K tokens
 	"gpt-4-1106-preview":             5,    // $0.01 / 1K tokens
@@ -74,13 +75,13 @@ var defaultModelRatio = map[string]float64{
 	"text-search-ada-doc-001":        10,
 	// "text-moderation-stable":         0.1,
 	// "text-moderation-latest":         0.1,
-	"claude-instant-1":               0.4,    // $0.8 / 1M tokens
-	"claude-2.0":                     4,      // $8 / 1M tokens
-	"claude-2.1":                     4,      // $8 / 1M tokens
-	"claude-3-haiku-20240307":        0.125,  // $0.25 / 1M tokens
-	"claude-3-5-sonnet-20240620":     1.5,    // $3 / 1M tokens
-	"claude-3-sonnet-20240229":       1.5,    // $3 / 1M tokens
-	"claude-3-opus-20240229":         7.5,    // $15 / 1M tokens
+	"claude-instant-1":               0.4,   // $0.8 / 1M tokens
+	"claude-2.0":                     4,     // $8 / 1M tokens
+	"claude-2.1":                     4,     // $8 / 1M tokens
+	"claude-3-haiku-20240307":        0.125, // $0.25 / 1M tokens
+	"claude-3-5-sonnet-20240620":     1.5,   // $3 / 1M tokens
+	"claude-3-sonnet-20240229":       1.5,   // $3 / 1M tokens
+	"claude-3-opus-20240229":         7.5,   // $15 / 1M tokens
 	"ERNIE-4.0-8K":                   0.120 * RMB,
 	"ERNIE-3.5-8K":                   0.012 * RMB,
 	"ERNIE-3.5-8K-0205":              0.024 * RMB,
@@ -335,7 +336,7 @@ func GetCompletionRatio(name string) float64 {
 		return 4.0 / 3.0
 	}
 	if strings.HasPrefix(name, "gpt-4") && name != "gpt-4-all" && name != "gpt-4-gizmo-*" {
-		if strings.HasPrefix(name, "gpt-4o-mini") {
+		if strings.HasPrefix(name, "gpt-4o-mini") || "gpt-4o-2024-08-06" == name {
 			return 4
 		}
 

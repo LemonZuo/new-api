@@ -2,40 +2,37 @@ package dto
 
 import "encoding/json"
 
-type ResponseFormat struct {
-	Type string `json:"type,omitempty"`
-}
-
 type GeneralOpenAIRequest struct {
-	Model            string          `json:"model,omitempty"`
-	Messages         []Message       `json:"messages,omitempty"`
-	Prompt           any             `json:"prompt,omitempty"`
-	BestOf           int             `json:"best_of,omitempty"`
-	Echo             bool            `json:"echo,omitempty"`
-	Stream           bool            `json:"stream,omitempty"`
-	StreamOptions    *StreamOptions  `json:"stream_options,omitempty"`
-	Suffix           string          `json:"suffix,omitempty"`
-	MaxTokens        uint            `json:"max_tokens,omitempty"`
-	Temperature      float64         `json:"temperature,omitempty"`
-	TopP             float64         `json:"top_p,omitempty"`
-	TopK             int             `json:"top_k,omitempty"`
-	Stop             any             `json:"stop,omitempty"`
-	N                int             `json:"n,omitempty"`
-	Input            any             `json:"input,omitempty"`
-	Instruction      string          `json:"instruction,omitempty"`
-	Size             string          `json:"size,omitempty"`
-	Functions        any             `json:"functions,omitempty"`
-	FrequencyPenalty float64         `json:"frequency_penalty,omitempty"`
-	PresencePenalty  float64         `json:"presence_penalty,omitempty"`
-	ResponseFormat   *ResponseFormat `json:"response_format,omitempty"`
-	Seed             float64         `json:"seed,omitempty"`
-	Tools            []ToolCall      `json:"tools,omitempty"`
-	ToolChoice       any             `json:"tool_choice,omitempty"`
-	User             string          `json:"user,omitempty"`
-	LogitBias        any             `json:"logit_bias,omitempty"`
-	LogProbs         any             `json:"logprobs,omitempty"`
-	TopLogProbs      int             `json:"top_logprobs,omitempty"`
-	Dimensions       int             `json:"dimensions,omitempty"`
+	Model             string         `json:"model,omitempty"`
+	Messages          []Message      `json:"messages,omitempty"`
+	Prompt            any            `json:"prompt,omitempty"`
+	BestOf            int            `json:"best_of,omitempty"`
+	Echo              bool           `json:"echo,omitempty"`
+	Stream            bool           `json:"stream,omitempty"`
+	StreamOptions     *StreamOptions `json:"stream_options,omitempty"`
+	Suffix            string         `json:"suffix,omitempty"`
+	MaxTokens         uint           `json:"max_tokens,omitempty"`
+	Temperature       float64        `json:"temperature,omitempty"`
+	TopP              float64        `json:"top_p,omitempty"`
+	TopK              int            `json:"top_k,omitempty"`
+	Stop              any            `json:"stop,omitempty"`
+	N                 int            `json:"n,omitempty"`
+	Input             any            `json:"input,omitempty"`
+	Instruction       string         `json:"instruction,omitempty"`
+	Size              string         `json:"size,omitempty"`
+	Functions         any            `json:"functions,omitempty"`
+	FrequencyPenalty  float64        `json:"frequency_penalty,omitempty"`
+	PresencePenalty   float64        `json:"presence_penalty,omitempty"`
+	ResponseFormat    any            `json:"response_format,omitempty"`
+	Seed              float64        `json:"seed,omitempty"`
+	Tools             []ToolCall     `json:"tools,omitempty"`
+	ToolChoice        any            `json:"tool_choice,omitempty"`
+	User              string         `json:"user,omitempty"`
+	LogitBias         any            `json:"logit_bias,omitempty"`
+	LogProbs          any            `json:"logprobs,omitempty"`
+	TopLogProbs       int            `json:"top_logprobs,omitempty"`
+	Dimensions        int            `json:"dimensions,omitempty"`
+	ParallelToolCalls bool           `json:"parallel_Tool_Calls,omitempty"`
 }
 
 type OpenAITools struct {
