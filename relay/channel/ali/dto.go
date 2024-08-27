@@ -36,8 +36,8 @@ type AliEmbeddingRequest struct {
 }
 
 type AliEmbedding struct {
-	Embedding []float64 `json:"embedding"`
-	TextIndex int       `json:"text_index"`
+	Embedding any `json:"embedding"`
+	TextIndex int `json:"text_index"`
 }
 
 type AliEmbeddingResponse struct {

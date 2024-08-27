@@ -23,5 +23,5 @@ type OllamaEmbeddingRequest struct {
 }
 
 type OllamaEmbeddingResponse struct {
-	Embedding []float64 `json:"embedding,omitempty"`
+	Embedding any `json:"embedding,omitempty"`
 }

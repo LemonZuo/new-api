@@ -41,9 +41,9 @@ type OpenAITextResponse struct {
 }
 
 type OpenAIEmbeddingResponseItem struct {
-	Object    string    `json:"object"`
-	Index     int       `json:"index"`
-	Embedding []float64 `json:"embedding"`
+	Object    string `json:"object"`
+	Index     int    `json:"index"`
+	Embedding any    `json:"embedding"`
 }
 
 type OpenAIEmbeddingResponse struct {

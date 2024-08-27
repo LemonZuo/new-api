@@ -50,9 +50,9 @@ type BaiduEmbeddingRequest struct {
 }
 
 type BaiduEmbeddingData struct {
-	Object    string    `json:"object"`
-	Embedding []float64 `json:"embedding"`
-	Index     int       `json:"index"`
+	Object    string `json:"object"`
+	Embedding any    `json:"embedding"`
+	Index     int    `json:"index"`
 }
 
 type BaiduEmbeddingResponse struct {

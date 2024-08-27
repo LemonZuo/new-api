@@ -190,8 +190,8 @@ var defaultModelPrice = map[string]float64{
 }
 
 var (
-	modelPriceMap      = make(map[string]float64)
-	modelPriceMapMutex = sync.RWMutex{}
+	modelPriceMap      map[string]float64 = nil
+	modelPriceMapMutex                    = sync.RWMutex{}
 )
 var (
 	modelRatioMap      map[string]float64 = nil
