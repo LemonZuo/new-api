@@ -10,24 +10,18 @@ import (
 )
 
 func generateMessageID() string {
-	// 提前生成时间戳和随机字符串
+	// 生成时间戳和随机字符串
 	timestamp := time.Now().UnixNano()
 	randomStr := GetRandomString(12)
 
-	// 确定使用的域名或服务器地址
-	var domainOrServer string
-	if strings.Contains(SMTPAccount, "@") {
-		parts := strings.Split(SMTPAccount, "@")
-		if len(parts) > 1 {
-			// 取出域名部分
-			domainOrServer = parts[1]
-		} else {
-			// 分割失败时使用服务器作为回退
-			domainOrServer = SMTPServer
+	// 使用域名或服务器地址初始化变量
+	domainOrServer := SMTPServer
+
+	// 如果 SMTPAccount 包含 '@'，提取域名
+	if atPos := strings.Index(SMTPAccount, "@"); atPos != -1 {
+		if atPos+1 < len(SMTPAccount) {
+			domainOrServer = SMTPAccount[atPos+1:]
 		}
-	} else {
-		// 不存在 '@' 时使用服务器地址
-		domainOrServer = SMTPServer
 	}
 
 	// 生成并返回消息ID
