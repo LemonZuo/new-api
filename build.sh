@@ -54,7 +54,17 @@ end_time=$(date +%s)
 # 计算总耗时
 elapsed_time=$(( end_time - start_time ))
 
-# 输出开始时间、结束时间和总耗时
-echo "Build started at: $(date -d @$start_time)"
-echo "Build finished at: $(date -d @$end_time)"
+# 判断运行的操作系统，分别采用兼容的日期命令
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Mac OS 使用的date命令
+    start_fmt=$(date -r $start_time '+%Y-%m-%d %H:%M:%S')
+    end_fmt=$(date -r $end_time '+%Y-%m-%d %H:%M:%S')
+else
+    # Linux 使用的date命令
+    start_fmt=$(date -d @$start_time '+%Y-%m-%d %H:%M:%S')
+    end_fmt=$(date -d @$end_time '+%Y-%m-%d %H:%M:%S')
+fi
+
+echo "Build started at: $start_fmt"
+echo "Build finished at: $end_fmt"
 echo "Total build time: $elapsed_time seconds"
