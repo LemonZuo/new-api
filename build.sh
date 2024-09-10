@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 记录构建开始时间
+start_time=$(date +%s)
+
 # 从 .env 文件中导入环境变量
 if [ -f ".env" ]; then
     export $(cat .env | sed 's/#.*//g' | xargs)
@@ -45,3 +48,13 @@ docker buildx build \
 docker logout
 # 恢复 VERSION 文件
 git restore VERSION
+
+# 记录构建结束时间
+end_time=$(date +%s)
+# 计算总耗时
+elapsed_time=$(( end_time - start_time ))
+
+# 输出开始时间、结束时间和总耗时
+echo "Build started at: $(date -d @$start_time)"
+echo "Build finished at: $(date -d @$end_time)"
+echo "Total build time: $elapsed_time seconds"
