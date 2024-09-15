@@ -42,6 +42,8 @@ func InitTokenEncoders() {
 			tokenEncoderMap[model] = gpt4oTokenEncoder
 		} else if strings.HasPrefix(model, "chatgpt-4o") {
 			tokenEncoderMap[model] = gpt4oTokenEncoder
+		} else if "o1" == model || strings.HasPrefix(model, "o1") {
+			tokenEncoderMap[model] = gpt4oTokenEncoder
 		} else if strings.HasPrefix(model, "gpt-4") {
 			tokenEncoderMap[model] = gpt4TokenEncoder
 		} else {

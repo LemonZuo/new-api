@@ -37,6 +37,10 @@ var defaultModelRatio = map[string]float64{
 	"gpt-4o":                         2.5,  // $0.005 / 1K tokens
 	"gpt-4o-2024-05-13":              2.5,  // $0.005 / 1K tokens
 	"gpt-4o-2024-08-06":              1.25, // $0.01 / 1K tokens
+	"o1-preview":                     7.5,
+	"o1-preview-2024-09-12":          7.5,
+	"o1-mini":                        1.5,
+	"o1-mini-2024-09-12":             1.5,
 	"gpt-4-turbo":                    5,    // $0.01 / 1K tokens
 	"gpt-4-turbo-2024-04-09":         5,    // $0.01 / 1K tokens
 	"gpt-4-1106-preview":             5,    // $0.01 / 1K tokens
@@ -104,8 +108,10 @@ var defaultModelRatio = map[string]float64{
 	"gemini-pro-vision":              1, // $0.00025 / 1k characters -> $0.001 / 1k tokens
 	"gemini-1.0-pro-vision-001":      1,
 	"gemini-1.0-pro-001":             1,
-	"gemini-1.5-pro-latest":          1,
+	"gemini-1.5-pro-latest":          1.75, // $3.5 / 1M tokens
+	"gemini-1.5-pro-exp-0827":        1.75, // $3.5 / 1M tokens
 	"gemini-1.5-flash-latest":        1,
+	"gemini-1.5-flash-exp-0827":      1,
 	"gemini-1.0-pro-latest":          1,
 	"gemini-1.0-pro-vision-latest":   1,
 	"gemini-ultra":                   1,
@@ -354,6 +360,9 @@ func GetCompletionRatio(name string) float64 {
 			return 3
 		}
 		return 2
+	}
+	if "o1" == name || strings.HasPrefix(name, "o1-") {
+		return 4
 	}
 	if name == "chatgpt-4o-latest" {
 		return 3
