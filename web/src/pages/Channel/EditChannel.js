@@ -178,6 +178,13 @@ const EditChannel = (props) => {
           2,
         );
       }
+      if (data.headers !== '') {
+        data.headers = JSON.stringify(
+            JSON.parse(data.headers),
+            null,
+            2,
+        );
+      }
       setInputs(data);
       if (data.auto_ban === 0) {
         setAutoBan(false);
@@ -316,6 +323,10 @@ const EditChannel = (props) => {
     }
     if (inputs.model_mapping !== '' && !verifyJSON(inputs.model_mapping)) {
       showInfo('模型映射必须是合法的 JSON 格式！');
+      return;
+    }
+    if (inputs.headers !== '' && !verifyJSON(inputs.headers)) {
+      showInfo('自定义请求头必须是合法的 JSON 格式！');
       return;
     }
     let localInputs = { ...inputs };
@@ -775,6 +786,21 @@ const EditChannel = (props) => {
               value={inputs.headers}
               autoComplete='new-password'
           />
+          <Typography.Text
+              style={{
+                color: 'rgba(var(--semi-blue-5), 1)',
+                userSelect: 'none',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                handleInputChange(
+                    'headers',
+                    JSON.stringify(HEADERS_EXAMPLE, null, 2),
+                );
+              }}
+          >
+            填入模板
+          </Typography.Text>
           <div style={{marginTop: 10}}>
             <Typography.Text strong>密钥：</Typography.Text>
           </div>
