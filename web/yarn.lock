@@ -10,10 +10,10 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@astrojs/compiler@^1.5.5":
-  version "1.8.2"
-  resolved "https://registry.npmjs.org/@astrojs/compiler/-/compiler-1.8.2.tgz"
-  integrity sha512-o/ObKgtMzl8SlpIdzaxFnt7SATKPxu4oIP/1NL+HDJRzxfJcAkOTAb/ZKMRyULbz4q+1t2/DAebs2Z1QairkZw==
+"@astrojs/compiler@^2.9.1":
+  version "2.10.3"
+  resolved "https://registry.npmjs.org/@astrojs/compiler/-/compiler-2.10.3.tgz"
+  integrity sha512-bL/O7YBxsFt55YHU021oL+xz+B/9HvGNId3F9xURN16aeqDK9juHGktdkCSXz+U4nqFACq6ZFvWomOzhV+zfPw==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.23.5", "@babel/code-frame@^7.24.1", "@babel/code-frame@^7.24.2":
   version "7.24.2"
@@ -432,20 +432,20 @@
     exenv "^1.2.2"
     prop-types "^15.6.2"
 
-"@so1ve/prettier-config@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@so1ve/prettier-config/-/prettier-config-2.0.0.tgz"
-  integrity sha512-s6qsH5Rf4Bl+J0LU9rKmSWe/rYRdsYw0ELyXhDDDqEaTWtah4NpHKJuVWARuKqj0TWLBeWmyWUoIH/Bkp/DHaw==
+"@so1ve/prettier-config@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/@so1ve/prettier-config/-/prettier-config-3.1.0.tgz"
+  integrity sha512-9GJ1yXKBC4DzqCTTaZoBf8zw7WWkVuXcccZt1Aqk4lj6ab/GiNUnjPGajUVYLjaqAEOKqM7jUSUfTjk2JTjCAg==
   dependencies:
-    "@so1ve/prettier-plugin-toml" "2.0.0"
-    prettier-plugin-astro "^0.13.0"
-    prettier-plugin-curly-and-jsdoc "2.0.0"
+    "@so1ve/prettier-plugin-toml" "3.1.0"
+    prettier-plugin-astro "^0.14.0"
+    prettier-plugin-curly-and-jsdoc "3.1.0"
     prettier-plugin-pkgsort "^0.2.1"
 
-"@so1ve/prettier-plugin-toml@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@so1ve/prettier-plugin-toml/-/prettier-plugin-toml-2.0.0.tgz"
-  integrity sha512-GvuFdTqhs3qxbhKTiCXWMXITmNLSdndUp7ql1yJbzzWaGqAdb3UH+R+0ZhtAEctBSx90MWAWW3kkW/Iba02tCg==
+"@so1ve/prettier-plugin-toml@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/@so1ve/prettier-plugin-toml/-/prettier-plugin-toml-3.1.0.tgz"
+  integrity sha512-8WZAGjAVNIJlkfWL6wHKxlUuEBY45fdd5qY5bR/Z6r/txgzKXk/r9qi1DTwc17gi/WcNuRrcRugecRT+mWbIYg==
 
 "@turf/boolean-clockwise@^6.5.0":
   version "6.5.0"
@@ -1531,19 +1531,19 @@ prettier-package-json@^2.8.0:
     sort-object-keys "^1.1.3"
     sort-order "^1.0.1"
 
-prettier-plugin-astro@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.npmjs.org/prettier-plugin-astro/-/prettier-plugin-astro-0.13.0.tgz"
-  integrity sha512-5HrJNnPmZqTUNoA97zn4gNQv9BgVhv+et03314WpQ9H9N8m2L9OSV798olwmG2YLXPl1iSstlJCR1zB3x5xG4g==
+prettier-plugin-astro@^0.14.0:
+  version "0.14.1"
+  resolved "https://registry.npmjs.org/prettier-plugin-astro/-/prettier-plugin-astro-0.14.1.tgz"
+  integrity sha512-RiBETaaP9veVstE4vUwSIcdATj6dKmXljouXc/DDNwBSPTp8FRkLGDSGFClKsAFeeg+13SB0Z1JZvbD76bigJw==
   dependencies:
-    "@astrojs/compiler" "^1.5.5"
+    "@astrojs/compiler" "^2.9.1"
     prettier "^3.0.0"
     sass-formatter "^0.7.6"
 
-prettier-plugin-curly-and-jsdoc@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/prettier-plugin-curly-and-jsdoc/-/prettier-plugin-curly-and-jsdoc-2.0.0.tgz"
-  integrity sha512-uSjWOWmX8+yrCrfhJSI58ODqtX7lXx07M8JYeOC1hfRv+vCttfiDlZoM27mNChGitJNKI+pCBvMMBYh8JiV0HQ==
+prettier-plugin-curly-and-jsdoc@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/prettier-plugin-curly-and-jsdoc/-/prettier-plugin-curly-and-jsdoc-3.1.0.tgz"
+  integrity sha512-4QMOHnLlkP2jTRWS0MFH6j+cuOiXLvXOqCLKbtwwVd8PPyq8NenW5AAwfwqiTNHBQG/DmzViPphRrwgN0XkUVQ==
 
 prettier-plugin-pkgsort@^0.2.1:
   version "0.2.1"
