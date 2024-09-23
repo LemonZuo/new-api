@@ -19,6 +19,7 @@ import {
   IconComment,
   IconCreditCard,
   IconGift,
+  IconHelpCircle,
   IconHistogram,
   IconHome,
   IconImage,
@@ -28,8 +29,10 @@ import {
   IconSetting,
   IconUser,
 } from '@douyinfe/semi-icons';
-import { Layout, Nav } from '@douyinfe/semi-ui';
+import { Avatar, Dropdown, Layout, Nav, Switch } from '@douyinfe/semi-ui';
 import { setStatusData } from '../helpers/data.js';
+import { stringToColor } from '../helpers/render.js';
+import { useSetTheme, useTheme } from '../context/Theme/index.js';
 
 // HeaderBar Buttons
 
@@ -44,6 +47,8 @@ const SiderBar = () => {
   const systemName = getSystemName();
   const logo = getLogo();
   const [isCollapsed, setIsCollapsed] = useState(defaultIsCollapsed);
+  const theme = useTheme();
+  const setTheme = useSetTheme();
 
   const routerMap = {
     home: '/',
@@ -64,11 +69,17 @@ const SiderBar = () => {
 
   const headerButtons = useMemo(
     () => [
+      // {
+      //   text: '首页',
+      //   itemKey: 'home',
+      //   to: '/',
+      //   icon: <IconHome />,
+      // },
       {
-        text: '首页',
-        itemKey: 'home',
-        to: '/',
-        icon: <IconHome />,
+        text: '模型价格',
+        itemKey: 'pricing',
+        to: '/pricing',
+        icon: <IconPriceTag />,
       },
       {
         text: '渠道',
@@ -104,12 +115,6 @@ const SiderBar = () => {
         itemKey: 'topup',
         to: '/topup',
         icon: <IconCreditCard />,
-      },
-      {
-        text: '模型价格',
-        itemKey: 'pricing',
-        to: '/pricing',
-        icon: <IconPriceTag />,
       },
       {
         text: '用户管理',
@@ -206,48 +211,58 @@ const SiderBar = () => {
 
   return (
     <>
-      <Layout>
-        <div style={{ height: '100%' }}>
-          <Nav
-            // bodyStyle={{ maxWidth: 200 }}
-            style={{ maxWidth: 200 }}
-            defaultIsCollapsed={
-              isMobile() ||
-              localStorage.getItem('default_collapse_sidebar') === 'true'
-            }
-            isCollapsed={isCollapsed}
-            onCollapseChange={(collapsed) => {
-              setIsCollapsed(collapsed);
-            }}
-            selectedKeys={selectedKeys}
-            renderWrapper={({ itemElement, isSubNav, isInSubNav, props }) => {
-              return (
-                <Link
-                  style={{ textDecoration: 'none' }}
-                  to={routerMap[props.itemKey]}
-                >
-                  {itemElement}
-                </Link>
-              );
-            }}
-            items={headerButtons}
-            onSelect={(key) => {
-              setSelectedKeys([key.itemKey]);
-            }}
-            header={{
-              logo: (
-                <img src={logo} alt='logo' style={{ marginRight: '0.75em' }} />
-              ),
-              text: systemName,
-            }}
-            // footer={{
-            //   text: '© 2021 NekoAPI',
-            // }}
-          >
-            <Nav.Footer collapseButton={true}></Nav.Footer>
-          </Nav>
-        </div>
-      </Layout>
+      <Nav
+        style={{ maxWidth: 220, height: '100%' }}
+        defaultIsCollapsed={
+          isMobile() ||
+          localStorage.getItem('default_collapse_sidebar') === 'true'
+        }
+        isCollapsed={isCollapsed}
+        onCollapseChange={(collapsed) => {
+          setIsCollapsed(collapsed);
+        }}
+        selectedKeys={selectedKeys}
+        renderWrapper={({ itemElement, isSubNav, isInSubNav, props }) => {
+          return (
+            <Link
+              style={{ textDecoration: 'none' }}
+              to={routerMap[props.itemKey]}
+            >
+              {itemElement}
+            </Link>
+          );
+        }}
+        items={headerButtons}
+        onSelect={(key) => {
+          setSelectedKeys([key.itemKey]);
+        }}
+        // header={{
+        //   logo: (
+        //     <img src={logo} alt='logo' style={{ marginRight: '0.75em' }} />
+        //   ),
+        //   text: systemName,
+        // }}
+        // footer={{
+        //   text: '© 2021 NekoAPI',
+        // }}
+        footer={
+          <>
+            {isMobile() && (
+              <Switch
+                checkedText='🌞'
+                size={'small'}
+                checked={theme === 'dark'}
+                uncheckedText='🌙'
+                onChange={(checked) => {
+                  setTheme(checked);
+                }}
+              />
+            )}
+          </>
+        }
+      >
+        <Nav.Footer collapseButton={true}></Nav.Footer>
+      </Nav>
     </>
   );
 };
