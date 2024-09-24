@@ -24,10 +24,7 @@ else
 fi
 
 # 更新 VERSION 文件
-date +%Y%m%d%H%M%S > VERSION
-
-# 读取 VERSION 文件中的版本号
-VERSION=$(cat VERSION)
+echo ${VERSION} > VERSION
 
 # 创建并使用一个新的 Buildx 构建器实例，如果已存在则使用现有的
 BUILDER_NAME=multi-platform-build
