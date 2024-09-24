@@ -30,13 +30,13 @@ type Channel struct {
 	Group                        string  `json:"group" gorm:"type:varchar(64);default:'default'"`
 	UsedQuota                    int64   `json:"used_quota" gorm:"bigint;default:0"`
 	ModelMapping                 *string `json:"model_mapping" gorm:"type:varchar(1024);default:''"`
+	StatusCodeMapping            *string `json:"status_code_mapping" gorm:"type:varchar(1024);default:''"`
+	Priority                     *int64  `json:"priority" gorm:"bigint;default:0"`
+	AutoBan                      *int    `json:"auto_ban" gorm:"default:1"`
+	OtherInfo                    string  `json:"other_info"`
+	Headers                      *string `json:"headers" gorm:"type:varchar(1024);default:''"`
+	Proxy                        *string `json:"proxy" gorm:"type:varchar(1024);default:''"`
 	// MaxInputTokens     		 	 *int    `json:"max_input_tokens" gorm:"default:0"`
-	StatusCodeMapping *string `json:"status_code_mapping" gorm:"type:varchar(1024);default:''"`
-	Priority          *int64  `json:"priority" gorm:"bigint;default:0"`
-	AutoBan           *int    `json:"auto_ban" gorm:"default:1"`
-	OtherInfo         string  `json:"other_info"`
-	Headers           *string `json:"headers" gorm:"type:varchar(1024);default:''"`
-	Proxy             *string `json:"proxy" gorm:"type:varchar(1024);default:''"`
 }
 
 func (channel *Channel) GetModels() []string {
