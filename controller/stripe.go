@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/stripe/stripe-go/v76"
-	"github.com/stripe/stripe-go/v76/webhook"
+	"github.com/stripe/stripe-go/v79"
+	"github.com/stripe/stripe-go/v79/webhook"
 	"io"
 	"log"
 	"net/http"
@@ -23,7 +23,9 @@ func StripeWebhook(c *gin.Context) {
 
 	signature := c.GetHeader("Stripe-Signature")
 	endpointSecret := common.StripeWebhookSecret
-	event, err := webhook.ConstructEvent(payload, signature, endpointSecret)
+	event, err := webhook.ConstructEventWithOptions(payload, signature, endpointSecret, webhook.ConstructEventOptions{
+		IgnoreAPIVersionMismatch: true,
+	})
 
 	if err != nil {
 		log.Printf("Stripe Webhook验签失败: %v\n", err)
