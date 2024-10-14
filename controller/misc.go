@@ -65,6 +65,7 @@ func GetStatus(c *gin.Context) {
 			"default_collapse_sidebar": common.DefaultCollapseSidebar,
 			"payment_enabled":          common.PaymentEnabled,
 			"mj_notify_enabled":        constant.MjNotifyEnabled,
+			"chats":                    constant.Chats,
 		},
 	})
 	return

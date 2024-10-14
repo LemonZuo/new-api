@@ -132,6 +132,14 @@ func LinuxDoOAuth(c *gin.Context) {
 			return
 		}
 
+		if user.Id == 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "用户已注销",
+			})
+			return
+		}
+
 		user.LinuxDoLevel = linuxdoUser.TrustLevel
 		err = user.Update(false)
 		if err != nil {

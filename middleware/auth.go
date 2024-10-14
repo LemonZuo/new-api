@@ -10,6 +10,17 @@ import (
 	"strings"
 )
 
+func validUserInfo(username string, role int) bool {
+	// check username is empty
+	if strings.TrimSpace(username) == "" {
+		return false
+	}
+	if !common.IsValidateRole(role) {
+		return false
+	}
+	return true
+}
+
 func authHelper(c *gin.Context, minRole int) {
 	session := sessions.Default(c)
 	username := session.Get("username")
@@ -31,6 +42,14 @@ func authHelper(c *gin.Context, minRole int) {
 		}
 		user := model.ValidateAccessToken(accessToken)
 		if user != nil && user.Username != "" {
+			if !validUserInfo(user.Username, user.Role) {
+				c.JSON(http.StatusOK, gin.H{
+					"success": false,
+					"message": "无权进行此操作，用户信息无效",
+				})
+				c.Abort()
+				return
+			}
 			// Token is valid
 			username = user.Username
 			role = user.Role
@@ -101,9 +120,19 @@ func authHelper(c *gin.Context, minRole int) {
 		c.Abort()
 		return
 	}
+	if !validUserInfo(username.(string), role.(int)) {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "无权进行此操作，用户信息无效",
+		})
+		c.Abort()
+		return
+	}
 	c.Set("username", username)
 	c.Set("role", role)
 	c.Set("id", id)
+	c.Set("group", session.Get("group"))
+	c.Set("use_access_token", useAccessToken)
 	c.Next()
 }
 

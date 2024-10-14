@@ -352,13 +352,14 @@ func GetCompletionRatio(name string) float64 {
 		return 4.0 / 3.0
 	}
 	if strings.HasPrefix(name, "gpt-4") && name != "gpt-4-all" && name != "gpt-4-gizmo-*" {
-		if strings.HasPrefix(name, "gpt-4o-mini") || "gpt-4o-2024-08-06" == name {
+		if strings.HasSuffix(name, "preview") || strings.HasPrefix(name, "gpt-4-turbo") || "gpt-4o-2024-05-13" == name {
+			return 3
+		}
+
+		if strings.HasPrefix(name, "gpt-4o") {
 			return 4
 		}
 
-		if strings.HasSuffix(name, "preview") || strings.HasPrefix(name, "gpt-4-turbo") || strings.HasPrefix(name, "gpt-4o") {
-			return 3
-		}
 		return 2
 	}
 	if "o1" == name || strings.HasPrefix(name, "o1-") {
@@ -378,10 +379,7 @@ func GetCompletionRatio(name string) float64 {
 		return 3
 	}
 	if strings.HasPrefix(name, "gemini-") {
-		if strings.Contains(name, "flash") {
-			return 4
-		}
-		return 3
+		return 4
 	}
 	if strings.HasPrefix(name, "command") {
 		switch name {

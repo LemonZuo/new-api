@@ -70,6 +70,7 @@ func InitOptionMap() {
 	common.OptionMap["StripeUnitPrice"] = strconv.FormatFloat(common.StripeUnitPrice, 'f', -1, 64)
 	common.OptionMap["MinTopUp"] = strconv.Itoa(common.MinTopUp)
 	common.OptionMap["TopupGroupRatio"] = common.TopupGroupRatio2JSONString()
+	common.OptionMap["Chats"] = constant.Chats2JsonString()
 	common.OptionMap["GitHubClientId"] = ""
 	common.OptionMap["GitHubClientSecret"] = ""
 	common.OptionMap["LinuxDoClientId"] = ""
@@ -252,6 +253,8 @@ func updateOptionMap(key string, value string) (err error) {
 		common.ServerAddress = value
 	case "OutProxyUrl":
 		common.OutProxyUrl = value
+	case "Chats":
+		err = constant.UpdateChatsByJsonString(value)
 	case "StripeApiSecret":
 		common.StripeApiSecret = value
 	case "StripeWebhookSecret":

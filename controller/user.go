@@ -7,6 +7,7 @@ import (
 	"one-api/common"
 	"one-api/model"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/gin-contrib/sessions"
@@ -67,6 +68,7 @@ func setupLogin(user *model.User, c *gin.Context) {
 	session.Set("username", user.Username)
 	session.Set("role", user.Role)
 	session.Set("status", user.Status)
+	session.Set("group", user.Group)
 	session.Set("linuxdo_enable", user.LinuxDoId == "" || user.LinuxDoLevel >= common.LinuxDoMinLevel)
 	err := session.Save()
 	if err != nil {
@@ -159,8 +161,9 @@ func Register(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
-			"message": err.Error(),
+			"message": "数据库错误，请稍后重试",
 		})
+		common.SysError(fmt.Sprintf("CheckUserExistOrDeleted error: %v", err))
 		return
 	}
 	if exist {
@@ -200,11 +203,20 @@ func Register(c *gin.Context) {
 	}
 	// 生成默认令牌
 	if constant.GenerateDefaultToken {
+		key, err := common.GenerateKey()
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"success": false,
+				"message": "生成默认令牌失败",
+			})
+			common.SysError("failed to generate token key: " + err.Error())
+			return
+		}
 		// 生成默认令牌
 		token := model.Token{
 			UserId:             insertedUser.Id, // 使用插入后的用户ID
 			Name:               cleanUser.Username + "的初始令牌",
-			Key:                common.GenerateKey(),
+			Key:                key,
 			CreatedTime:        common.GetTimestamp(),
 			AccessedTime:       common.GetTimestamp(),
 			ExpiredTime:        -1,     // 永不过期
@@ -311,7 +323,18 @@ func GenerateAccessToken(c *gin.Context) {
 		})
 		return
 	}
-	user.AccessToken = common.GetUUID()
+	// get rand int 28-32
+	randI := common.GetRandomInt(4)
+	key, err := common.GenerateRandomKey(29 + randI)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "生成失败",
+		})
+		common.SysError("failed to generate key: " + err.Error())
+		return
+	}
+	user.SetAccessToken(key)
 
 	if model.DB.Where("access_token = ?", user.AccessToken).First(user).RowsAffected != 0 {
 		c.JSON(http.StatusOK, gin.H{
@@ -631,6 +654,7 @@ func DeleteSelf(c *gin.Context) {
 func CreateUser(c *gin.Context) {
 	var user model.User
 	err := json.NewDecoder(c.Request.Body).Decode(&user)
+	user.Username = strings.TrimSpace(user.Username)
 	if err != nil || user.Username == "" || user.Password == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -678,8 +702,8 @@ func CreateUser(c *gin.Context) {
 }
 
 type ManageRequest struct {
-	Username string `json:"username"`
-	Action   string `json:"action"`
+	Id     int    `json:"id"`
+	Action string `json:"action"`
 }
 
 // ManageUser Only admin user can do this
@@ -695,7 +719,7 @@ func ManageUser(c *gin.Context) {
 		return
 	}
 	user := model.User{
-		Username: req.Username,
+		Id: req.Id,
 	}
 	// Fill attributes
 	model.DB.Unscoped().Where(&user).First(&user)

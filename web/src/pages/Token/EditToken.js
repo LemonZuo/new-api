@@ -50,7 +50,7 @@ const EditToken = (props) => {
     group,
   } = inputs;
   // const [visible, setVisible] = useState(false);
-  const [models, setModels] = useState({});
+  const [models, setModels] = useState([]);
   const [groups, setGroups] = useState([]);
   const navigate = useNavigate();
   const handleInputChange = (name, value) => {
@@ -93,7 +93,7 @@ const EditToken = (props) => {
   };
 
   const loadGroups = async () => {
-    let res = await API.get(`/api/user/groups`);
+    let res = await API.get(`/api/user/self/groups`);
     const { success, message, data } = res.data;
     if (success) {
       // return data is a map, key is group name, value is group description

@@ -34,7 +34,7 @@ type GeneralOpenAIRequest struct {
 	TopLogProbs       int            `json:"top_logprobs,omitempty"`
 	Dimensions        int            `json:"dimensions,omitempty"`
 	ParallelToolCalls bool           `json:"parallel_Tool_Calls,omitempty"`
-	EncodingFormat    string         `json:"encoding_format,omitempty"`
+	EncodingFormat    any         `json:"encoding_format,omitempty"`
 }
 
 type OpenAITools struct {

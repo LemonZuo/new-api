@@ -59,6 +59,17 @@ body {
   display: revert;
 }
 
+.semi-chat {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100%;
+}
+
+.semi-chat-chatBox-content {
+  min-width: auto;
+  word-break: break-word;
+}
+
 .tableHiddle {
   display: none !important;
 }

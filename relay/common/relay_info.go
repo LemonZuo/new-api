@@ -20,6 +20,7 @@ type RelayInfo struct {
 	setFirstResponse     bool
 	ApiType              int
 	IsStream             bool
+	IsPlayground         bool
 	RelayMode            int
 	UpstreamModelName    string
 	OriginModelName      string
@@ -68,6 +69,11 @@ func GenRelayInfo(c *gin.Context) *RelayInfo {
 		Organization:      c.GetString("channel_organization"),
 		Headers:        c.GetString("headers"),
 		Proxy:          c.GetString("proxy"),
+	}
+	if strings.HasPrefix(c.Request.URL.Path, "/pg") {
+		info.IsPlayground = true
+		info.RequestURLPath = strings.TrimPrefix(info.RequestURLPath, "/pg")
+		info.RequestURLPath = "/v1" + info.RequestURLPath
 	}
 	if info.BaseUrl == "" {
 		info.BaseUrl = common.ChannelBaseURLs[channelType]
@@ -149,4 +155,21 @@ func GenTaskRelayInfo(c *gin.Context) *TaskRelayInfo {
 		info.BaseUrl = common.ChannelBaseURLs[channelType]
 	}
 	return info
+}
+
+func (info *TaskRelayInfo) ToRelayInfo() *RelayInfo {
+	return &RelayInfo{
+		ChannelType:       info.ChannelType,
+		ChannelId:         info.ChannelId,
+		TokenId:           info.TokenId,
+		UserId:            info.UserId,
+		Group:             info.Group,
+		StartTime:         info.StartTime,
+		ApiType:           info.ApiType,
+		RelayMode:         info.RelayMode,
+		UpstreamModelName: info.UpstreamModelName,
+		RequestURLPath:    info.RequestURLPath,
+		ApiKey:            info.ApiKey,
+		BaseUrl:           info.BaseUrl,
+	}
 }
