@@ -63,23 +63,44 @@ func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeR
 	claudeTools := make([]Tool, 0, len(textRequest.Tools))
 
 	for _, tool := range textRequest.Tools {
-		if params, ok := tool.Function.Parameters.(map[string]any); ok {
-			claudeTool := Tool{
-				Name:        tool.Function.Name,
-				Description: tool.Function.Description,
-			}
-			claudeTool.InputSchema = make(map[string]interface{})
-			claudeTool.InputSchema["type"] = params["type"].(string)
-			claudeTool.InputSchema["properties"] = params["properties"]
-			claudeTool.InputSchema["required"] = params["required"]
-			for s, a := range params {
-				if s == "type" || s == "properties" || s == "required" {
-					continue
-				}
-				claudeTool.InputSchema[s] = a
-			}
-			claudeTools = append(claudeTools, claudeTool)
+		claudeTool := Tool{
+			Name:        tool.Function.Name,
+			Description: tool.Function.Description,
+			Type:        tool.Type,
 		}
+
+		if "function" != tool.Type {
+			claudeTool.Description = nil
+		}
+
+		if params, ok := tool.Function.Parameters.(map[string]any); ok {
+			if "function" == tool.Type {
+				claudeTool.Type = nil
+
+				claudeTool.InputSchema = make(map[string]interface{})
+				claudeTool.InputSchema["type"] = params["type"].(string)
+				claudeTool.InputSchema["properties"] = params["properties"]
+				claudeTool.InputSchema["required"] = params["required"]
+				for s, a := range params {
+					if s == "type" || s == "properties" || s == "required" {
+						continue
+					}
+					claudeTool.InputSchema[s] = a
+				}
+			} else {
+				if val, ok := params["display_height_px"]; ok {
+					claudeTool.DisplayHeightPx = int(val.(float64))
+				}
+				if val, ok := params["display_width_px"]; ok {
+					claudeTool.DisplayWidthPx = int(val.(float64))
+				}
+				if val, ok := params["display_number"]; ok {
+					claudeTool.DisplayNumber = int(val.(float64))
+				}
+			}
+		}
+
+		claudeTools = append(claudeTools, claudeTool)
 	}
 
 	claudeRequest := ClaudeRequest{
@@ -91,6 +112,7 @@ func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeR
 		TopK:          textRequest.TopK,
 		Stream:        textRequest.Stream,
 		Tools:         claudeTools,
+		ToolChoice:    textRequest.ToolChoice,
 	}
 	if claudeRequest.MaxTokens == 0 {
 		claudeRequest.MaxTokens = 4096

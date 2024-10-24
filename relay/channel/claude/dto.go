@@ -31,9 +31,13 @@ type ClaudeMessage struct {
 }
 
 type Tool struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description,omitempty"`
-	InputSchema map[string]interface{} `json:"input_schema"`
+	Name            string                 `json:"name"`
+	Description     any                    `json:"description,omitempty"`
+	InputSchema     map[string]interface{} `json:"input_schema,omitempty"`
+	Type            any                    `json:"type,omitempty"`
+	DisplayHeightPx int                    `json:"display_height_px,omitempty"`
+	DisplayWidthPx  int                    `json:"display_width_px,omitempty"`
+	DisplayNumber   int                    `json:"display_number,omitempty"`
 }
 
 type InputSchema struct {

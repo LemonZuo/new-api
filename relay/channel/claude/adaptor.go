@@ -50,11 +50,18 @@ func (a *Adaptor) GetRequestURL(info *relaycommon.RelayInfo) (string, error) {
 func (a *Adaptor) SetupRequestHeader(c *gin.Context, req *http.Request, info *relaycommon.RelayInfo) error {
 	channel.SetupApiRequestHeader(info, c, req)
 	req.Header.Set("x-api-key", info.ApiKey)
+
 	anthropicVersion := c.Request.Header.Get("anthropic-version")
 	if anthropicVersion == "" {
 		anthropicVersion = "2023-06-01"
 	}
 	req.Header.Set("anthropic-version", anthropicVersion)
+
+	anthropicBeta := c.Request.Header.Get("anthropic-beta")
+	if "" != anthropicBeta {
+		req.Header.Set("anthropic-beta", anthropicBeta)
+	}
+
 	return nil
 }
 
