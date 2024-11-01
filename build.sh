@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # 记录构建开始时间
 start_time=$(date +%s)
 
