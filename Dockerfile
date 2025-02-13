@@ -1,14 +1,13 @@
-FROM node:20 AS web_builder
+FROM oven/bun:latest AS web_builder
 
 WORKDIR /build
 COPY web/package.json .
-COPY web/package-lock.json .
-RUN npm install
+RUN bun install
 COPY ./web .
 COPY ./VERSION .
-RUN DISABLE_ESLINT_PLUGIN='true' VITE_REACT_APP_VERSION=$(cat VERSION) npm run build
+RUN DISABLE_ESLINT_PLUGIN='true' VITE_REACT_APP_VERSION=$(cat VERSION) bun run build
 
-FROM golang AS go_builder
+FROM golang:1.21 AS go_builder
 
 ENV GO111MODULE=on \
     CGO_ENABLED=1 \
@@ -26,7 +25,7 @@ FROM alpine
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache ca-certificates tzdata \
-    && update-ca-certificates 2>/dev/null || true
+    && update-ca-certificates
 
 COPY --from=go_builder /build/one-api /
 EXPOSE 3000
