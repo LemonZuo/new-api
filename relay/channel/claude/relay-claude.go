@@ -28,7 +28,7 @@ func stopReasonClaude2OpenAI(reason string) string {
 	}
 }
 
-func RequestOpenAI2ClaudeComplete(textRequest dto.GeneralOpenAIRequest) *ClaudeRequest {
+func RequestOpenAI2ClaudeComplete(c *gin.Context, textRequest dto.GeneralOpenAIRequest) *ClaudeRequest {
 
 	claudeRequest := ClaudeRequest{
 		Model:         textRequest.Model,
@@ -59,16 +59,18 @@ func RequestOpenAI2ClaudeComplete(textRequest dto.GeneralOpenAIRequest) *ClaudeR
 	return &claudeRequest
 }
 
-func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeRequest, error) {
+func RequestOpenAI2ClaudeMessage(c *gin.Context, textRequest dto.GeneralOpenAIRequest) (*ClaudeRequest, error) {
 	claudeTools := make([]Tool, 0, len(textRequest.Tools))
 
 	if strings.HasSuffix(textRequest.Model, "-thinking") {
 		textRequest.Model = strings.TrimSuffix(textRequest.Model, "-thinking")
 
 		if textRequest.MaxTokens == 0 {
-			textRequest.MaxTokens = 4096
-		} else if textRequest.MaxTokens < 1280 {
-			textRequest.MaxTokens = 1280
+			textRequest.MaxTokens = 8192
+		} else if textRequest.MaxTokens < 2048 {
+			textRequest.MaxTokens = 2048
+		} else if textRequest.MaxTokens > 64000 {
+			c.Request.Header.Set("anthropic-beta", "output-128k-2025-02-19")
 		}
 
 		textRequest.TopP = 0
@@ -76,7 +78,7 @@ func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeR
 		textRequest.Temperature = 0
 		textRequest.Thinking = &dto.Thinking{
 			Type:         "enabled",
-			BudgetTokens: int(float64(textRequest.MaxTokens) * 0.8),
+			BudgetTokens: int(float64(textRequest.MaxTokens) * 0.5),
 		}
 	}
 

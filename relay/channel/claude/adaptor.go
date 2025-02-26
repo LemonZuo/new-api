@@ -70,9 +70,9 @@ func (a *Adaptor) ConvertRequest(c *gin.Context, info *relaycommon.RelayInfo, re
 		return nil, errors.New("request is nil")
 	}
 	if a.RequestMode == RequestModeCompletion {
-		return RequestOpenAI2ClaudeComplete(*request), nil
+		return RequestOpenAI2ClaudeComplete(c, *request), nil
 	} else {
-		return RequestOpenAI2ClaudeMessage(*request)
+		return RequestOpenAI2ClaudeMessage(c, *request)
 	}
 }
 

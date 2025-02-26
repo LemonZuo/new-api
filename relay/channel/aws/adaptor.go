@@ -48,7 +48,7 @@ func (a *Adaptor) ConvertRequest(c *gin.Context, info *relaycommon.RelayInfo, re
 
 	var claudeReq *claude.ClaudeRequest
 	var err error
-	claudeReq, err = claude.RequestOpenAI2ClaudeMessage(*request)
+	claudeReq, err = claude.RequestOpenAI2ClaudeMessage(c, *request)
 
 	c.Set("request_model", request.Model)
 	c.Set("converted_request", claudeReq)

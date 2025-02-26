@@ -25,12 +25,12 @@ services:
       - db
 
   redis:
-    image: redis:latest
+    image: redis:7.4
     container_name: redis
     restart: always
 
   db:
-    image: mysql:8.2.0
+    image: mysql:8.2
     container_name: mysql
     restart: always
     volumes:
