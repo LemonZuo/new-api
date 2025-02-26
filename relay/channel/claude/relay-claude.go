@@ -62,6 +62,24 @@ func RequestOpenAI2ClaudeComplete(textRequest dto.GeneralOpenAIRequest) *ClaudeR
 func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeRequest, error) {
 	claudeTools := make([]Tool, 0, len(textRequest.Tools))
 
+	if strings.HasSuffix(textRequest.Model, "-thinking") {
+		textRequest.Model = strings.TrimSuffix(textRequest.Model, "-thinking")
+
+		if textRequest.MaxTokens == 0 {
+			textRequest.MaxTokens = 4096
+		} else if textRequest.MaxTokens < 1280 {
+			textRequest.MaxTokens = 1280
+		}
+
+		textRequest.TopP = 0
+		textRequest.TopK = 0
+		textRequest.Temperature = 0
+		textRequest.Thinking = &dto.Thinking{
+			Type:         "enabled",
+			BudgetTokens: int(float64(textRequest.MaxTokens) * 0.8),
+		}
+	}
+
 	for _, tool := range textRequest.Tools {
 		claudeTool := Tool{
 			Name:        tool.Function.Name,
@@ -113,6 +131,7 @@ func RequestOpenAI2ClaudeMessage(textRequest dto.GeneralOpenAIRequest) (*ClaudeR
 		Stream:        textRequest.Stream,
 		Tools:         claudeTools,
 		ToolChoice:    textRequest.ToolChoice,
+		Thinking:      textRequest.Thinking,
 	}
 	if claudeRequest.MaxTokens == 0 {
 		claudeRequest.MaxTokens = 4096
@@ -334,12 +353,19 @@ func StreamResponseClaude2OpenAI(reqMode int, claudeResponse *ClaudeResponse) (*
 			if claudeResponse.Delta != nil {
 				choice.Index = claudeResponse.Index
 				choice.Delta.SetContentString(claudeResponse.Delta.Text)
-				if claudeResponse.Delta.Type == "input_json_delta" {
+				switch claudeResponse.Delta.Type {
+				case "input_json_delta":
 					tools = append(tools, dto.ToolCall{
 						Function: dto.FunctionCall{
 							Arguments: claudeResponse.Delta.PartialJson,
 						},
 					})
+				case "signature_delta":
+					reasoningContent := "\n"
+					choice.Delta.ReasoningContent = &reasoningContent
+				case "thinking_delta":
+					reasoningContent := claudeResponse.Delta.Thinking
+					choice.Delta.ReasoningContent = &reasoningContent
 				}
 			}
 		} else if claudeResponse.Type == "message_delta" {
@@ -377,6 +403,8 @@ func ResponseClaude2OpenAI(reqMode int, claudeResponse *ClaudeResponse) *dto.Ope
 	if len(claudeResponse.Content) > 0 {
 		responseText = claudeResponse.Content[0].Text
 	}
+
+	reasoningContent := ""
 	tools := make([]dto.ToolCall, 0)
 	if reqMode == RequestModeCompletion {
 		content, _ := json.Marshal(strings.TrimPrefix(claudeResponse.Completion, " "))
@@ -393,7 +421,8 @@ func ResponseClaude2OpenAI(reqMode int, claudeResponse *ClaudeResponse) *dto.Ope
 	} else {
 		fullTextResponse.Id = claudeResponse.Id
 		for _, message := range claudeResponse.Content {
-			if message.Type == "tool_use" {
+			switch message.Type {
+			case "tool_use":
 				args, _ := json.Marshal(message.Input)
 				tools = append(tools, dto.ToolCall{
 					ID:   message.Id,
@@ -403,6 +432,10 @@ func ResponseClaude2OpenAI(reqMode int, claudeResponse *ClaudeResponse) *dto.Ope
 						Arguments: string(args),
 					},
 				})
+			case "thinking":
+				reasoningContent = message.Thinking
+			case "text":
+				responseText = message.Text
 			}
 		}
 	}
@@ -417,6 +450,7 @@ func ResponseClaude2OpenAI(reqMode int, claudeResponse *ClaudeResponse) *dto.Ope
 	if len(tools) > 0 {
 		choice.Message.ToolCalls = tools
 	}
+	choice.Message.ReasoningContent = &reasoningContent
 	fullTextResponse.Model = claudeResponse.Model
 	choices = append(choices, choice)
 	fullTextResponse.Choices = choices

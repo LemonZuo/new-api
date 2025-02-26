@@ -36,6 +36,13 @@ type GeneralOpenAIRequest struct {
 	Dimensions          int            `json:"dimensions,omitempty"`
 	ParallelToolCalls   bool           `json:"parallel_tool_calls,omitempty"`
 	EncodingFormat      any            `json:"encoding_format,omitempty"`
+
+	Thinking *Thinking `json:"thinking,omitempty"`
+}
+
+type Thinking struct {
+	Type         string `json:"type"`
+	BudgetTokens int    `json:"budget_tokens"`
 }
 
 type OpenAITools struct {
@@ -77,11 +84,12 @@ func (r GeneralOpenAIRequest) ParseInput() []string {
 }
 
 type Message struct {
-	Role       string          `json:"role"`
-	Content    json.RawMessage `json:"content"`
-	Name       *string         `json:"name,omitempty"`
-	ToolCalls  any             `json:"tool_calls,omitempty"`
-	ToolCallId string          `json:"tool_call_id,omitempty"`
+	Role             string          `json:"role"`
+	Content          json.RawMessage `json:"content"`
+	ReasoningContent *string         `json:"reasoning_content,omitempty"`
+	Name             *string         `json:"name,omitempty"`
+	ToolCalls        any             `json:"tool_calls,omitempty"`
+	ToolCallId       string          `json:"tool_call_id,omitempty"`
 }
 
 type MediaMessage struct {

@@ -1,5 +1,7 @@
 package claude
 
+import "one-api/dto"
+
 type ClaudeMetadata struct {
 	UserId string `json:"user_id"`
 }
@@ -11,6 +13,9 @@ type ClaudeMediaMessage struct {
 	Usage       *ClaudeUsage         `json:"usage,omitempty"`
 	StopReason  *string              `json:"stop_reason,omitempty"`
 	PartialJson string               `json:"partial_json,omitempty"`
+	Thinking    string               `json:"thinking,omitempty"`
+	Signature   string               `json:"signature,omitempty"`
+	Delta       string               `json:"delta,omitempty"`
 	// tool_calls
 	Id        string `json:"id,omitempty"`
 	Name      string `json:"name,omitempty"`
@@ -58,9 +63,10 @@ type ClaudeRequest struct {
 	TopP              float64         `json:"top_p,omitempty"`
 	TopK              int             `json:"top_k,omitempty"`
 	//ClaudeMetadata    `json:"metadata,omitempty"`
-	Stream     bool   `json:"stream,omitempty"`
-	Tools      []Tool `json:"tools,omitempty"`
-	ToolChoice any    `json:"tool_choice,omitempty"`
+	Stream     bool          `json:"stream,omitempty"`
+	Tools      []Tool        `json:"tools,omitempty"`
+	ToolChoice any           `json:"tool_choice,omitempty"`
+	Thinking   *dto.Thinking `json:"thinking,omitempty"`
 }
 
 type ClaudeError struct {
